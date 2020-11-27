@@ -11,6 +11,7 @@ import logging
 import os
 import socket
 
+user_file = os.environ.get("USER_FILE")
 cellxgene_location = os.environ.get("CELLXGENE_LOCATION")
 cellxgene_data = os.environ.get("CELLXGENE_DATA")
 cellxgene_args = os.environ.get("CELLXGENE_ARGS", None)

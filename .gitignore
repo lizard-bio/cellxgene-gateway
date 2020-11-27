@@ -2,7 +2,6 @@
 .DS_Store
 __pycache__
 *.pyc
-run.sh
 .cellxgene-gateway
 
 
@@ -139,3 +138,6 @@ dmypy.json
 
 *.patch
 .vscode
+
+# credentials file
+users.json

@@ -7,9 +7,9 @@
 # OR CONDITIONS OF ANY KIND, either express or implied. See the License for
 # the specific language governing permissions and limitations under the License.
 
+from cellxgene_gateway.auth import Role, get_auth
 import json
 import logging
-
 # import BaseHTTPServer
 import os
 from threading import Lock, Thread
@@ -25,7 +25,6 @@ from flask import (
 )
 from flask_api import status
 from werkzeug.utils import secure_filename
-
 from cellxgene_gateway import env
 from cellxgene_gateway.backend_cache import BackendCache
 from cellxgene_gateway.cache_entry import CacheEntryStatus
@@ -39,6 +38,7 @@ from cellxgene_gateway.prune_process_cache import PruneProcessCache
 from cellxgene_gateway.util import current_time_stamp
 
 app = Flask(__name__)
+auth = get_auth()
 
 
 def _force_https(app):
@@ -105,6 +105,7 @@ def favicon():
 
 
 @app.route("/")
+@auth.login_required(role=[Role.ADMIN])
 def index():
     users = [
         name
@@ -192,6 +193,7 @@ def set_no_cache(resp):
 
 
 @app.route("/filecrawl.html")
+@auth.login_required(role=[Role.ADMIN])
 def filecrawl():
     entries = recurse_dir(env.cellxgene_data)
     rendered_html = render_entries(entries)
@@ -206,6 +208,7 @@ def filecrawl():
 
 
 @app.route("/filecrawl/<path:path>")
+@auth.login_required(role=[Role.ADMIN])
 def do_filecrawl(path):
     filecrawl_path = os.path.join(env.cellxgene_data, path)
     if not os.path.isdir(filecrawl_path):
@@ -227,6 +230,7 @@ entry_lock = Lock()
 
 
 @app.route("/view/<path:path>", methods=["GET", "PUT", "POST"])
+@auth.login_required(role=[Role.ADMIN, Role.USER])
 def do_view(path):
     key = get_key(path)
     print(
