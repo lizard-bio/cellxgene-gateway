@@ -193,7 +193,7 @@ def set_no_cache(resp):
 
 
 @app.route("/filecrawl.html")
-@auth.login_required(role=[Role.ADMIN])
+@auth.login_required(role=[Role.ADMIN, Role.USER])
 def filecrawl():
     entries = recurse_dir(env.cellxgene_data)
     rendered_html = render_entries(entries)
@@ -208,7 +208,7 @@ def filecrawl():
 
 
 @app.route("/filecrawl/<path:path>")
-@auth.login_required(role=[Role.ADMIN])
+@auth.login_required(role=[Role.ADMIN, Role.USER])
 def do_filecrawl(path):
     filecrawl_path = os.path.join(env.cellxgene_data, path)
     if not os.path.isdir(filecrawl_path):
